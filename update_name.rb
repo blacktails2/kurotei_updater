@@ -23,6 +23,9 @@ end
 
 @orig_name, @screen_name = [:name, :screen_name].map{|x| @rest_client.user.send(x) }
 
+def ng_word?(name)
+    return false
+end
 
 def update_name(status)
     begin
@@ -33,15 +36,19 @@ def update_name(status)
             else
              return
         end
+        
+            if ng_word?(name)
+            @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)")
+            else
+            @rest_client.update_profile(name: name)
+            text = @orig_name == name ? "元に戻したよ！" : "I just have changed name “#{name}”!"
+            @rest_client.update("@#{status.user.screen_name} #{text}")
 
         if name && 20 < name.length
-            text = "so long."
+                        text = "so long."
             raise "New name is too long"
         end
-        text = @orig_name == name ? "元に戻したよ！" : "I just have changed name “#{name}”!"
-        @rest_client.update("@#{status.user.screen_name} #{text}")
-        @rest_client.update_profile(name: name)
-    rescue => e
+            rescue => e
         p status, status.text
         p e
     end
