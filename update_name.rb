@@ -22,32 +22,35 @@ end
 end
 
 @orig_name, @screen_name = [:name, :screen_name].map{|x| @rest_client.user.send(x) }
-@regexp = /^(?:RT )?@#{@screen_name} *update_name( (.+))?/
+
 
 def update_name(status)
     begin
-        name = status.text.match(@regexp)[2]
+        if status.text.match(/^@#{@screen_name} *update_name( (.+))?/)
+            name = $1
+            elsif status.text.match(/^(.+?)[\s　]*[(（]@#{@screen_name}[)）]/)
+            name = $1
+            else
+             return
+        end
+
         if name && 20 < name.length
-            text = "長すぎです!"
+            text = "so long."
             raise "New name is too long"
         end
-        
+        text = @orig_name == name ? "元に戻したよ！" : "I just have changed name “#{name}”!"
+        @rest_client.update("@#{status.user.screen_name} #{text}")
         @rest_client.update_profile(name: name)
-        text = @orig_name == name ? "元に戻したよ！" : "#{name} に改名したよ！"
-        rescue => e
+    rescue => e
         p status, status.text
         p e
-        ensure
-        @rest_client.update("@#{status.user.screen_name} #{text}")
     end
 end
 
 @stream_client.user do |object|
-    next unless object.is_a? Twitter::Tweet and object.text.match(@regexp)
+    next unless object.is_a? Twitter::Tweet
     
     unless object.text.start_with? "RT"
         update_name(object)
-        else
-        puts "RTです"
     end
 end
