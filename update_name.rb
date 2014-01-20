@@ -34,26 +34,26 @@ def update_name(status)
             elsif status.text.match(/^(.+?)[\s　]*[(（]@#{@screen_name}[)）]/)
             name = $1
             else
-             return
+            return
         end
         
-            if ng_word?(name)
+        if ng_word?(name)
             @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)")
             else
+            if name && 20 < name.length
+                text = "so long."
+                raise "New name is too long"
+            end
             @rest_client.update_profile(name: name)
-            text = @orig_name == name ? "元に戻したよ！" : "I just have changed name “#{name}”!"
+            text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!"
             @rest_client.update("@#{status.user.screen_name} #{text}")
-
-        if name && 20 < name.length
-                        text = "so long."
-            raise "New name is too long"
-        end
+            end
+            
             rescue => e
-        p status, status.text
-        p e
+            p status, status.text
+            p e
     end
 end
-
 @stream_client.user do |object|
     next unless object.is_a? Twitter::Tweet
     
