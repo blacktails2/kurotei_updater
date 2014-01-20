@@ -46,7 +46,8 @@ def update_name(status)
             end
             @rest_client.update_profile(name: name)
             text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!"
-            @rest_client.update("@#{status.user.screen_name} #{text}")
+            ensure
+            @rest_client.update(“@#{status.user.screen_name} #{text}”)
             end
             
             rescue => e
