@@ -29,32 +29,37 @@ end
 
 def update_name(status)
     begin
-        if status.text.match(/^@#{@screen_name} *update_name( (.+))?/)
-            name = $1
-            elsif status.text.match(/^(.+?)[\s　]*[(（]@#{@screen_name}[)）]/)
-            name = $1
-            else
-            return
+        @rest_client.update_profile(name: name) #名前を指定された物に変える
+        text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!" #元の名前の場合は元に戻した、指定された場合はi have just...
+        @rest_client.update("@#{status.user.screen_name} #{text}") #textで定義された物を呟く
+        if status.text.match(/^@#{@screen_name} *update_name( (.+))?/) #@sn update_name名前がマッチしてるか調べる
+            name = $1 #抽出
+        elsif status.text.match(/^(.+?)[\s　]*[(（]@#{@screen_name}[)）]/) #名前(@sn)をマッチしているか調べる
+            name = $1 #抽出
+        else #それでもない場合
+            return #戻す
         end
         
-        if ng_word?(name)
-            @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)")
-            else
-            if name && 20 < name.length
-                text = "so long."
-                raise "New name is too long"
-            end
-            @rest_client.update_profile(name: name)
-            text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!"
-            ensure
-            @rest_client.update(“@#{status.user.screen_name} #{text}”)
-            end
+        if ng_word?(name) #ngワードを調べる
+            @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)") #戒めを呟く
+            return
+        end
+    else #update_nameが成功した場合
+        if name && 20 < name.length #名前が20文字を越えている場合
+            text = "so long." #呟くtextを定義
+            @rest_client.update("@#{status.user.screen_name} #{text}") #呟く
+            puts "名前が長い" #ターミナルにエラーを書き出す
+        end
+        end
             
-            rescue => e
-            p status, status.text
-            p e
+    rescue => e #例外をeと定義
+       p status, status.text
+       p e #例外をターミナルに書き出す
+        
+    ensure
     end
 end
+
 @stream_client.user do |object|
     next unless object.is_a? Twitter::Tweet
     
