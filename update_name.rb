@@ -26,12 +26,10 @@ end
 
 def ng_word?(name)
     ng_words = YAML.load_file("ng_word.yml")
-    if ng_words != false
-        result = ng_words.map do |ng_word|
-            true if name.include?(ng_word)
-        end
-        result.include?(true)
-    end
+    return false if ng_words == false
+    ng_words.map do |ng_word|
+        true if name.include?(ng_word)
+    end.include?(true)
 end
 
 def update_name(status)
