@@ -1,5 +1,6 @@
 # Coding: UTF-8
 require 'twitter'
+require 'yaml'
 require './key.rb'
 
 CONSUMER_KEY    = Conf::CONSUMER_KEY
@@ -24,7 +25,13 @@ end
 @orig_name, @screen_name = [:name, :screen_name].map{|x| @rest_client.user.send(x) }
 
 def ng_word?(name)
-    return false
+    ng_words = YAML.load_file("ng_word.yml")
+    if ng_words != false
+        result = ng_words.map do |ng_word|
+            true if name.include?(ng_word)
+        end
+        result.include?(true)
+    end
 end
 
 def update_name(status)
