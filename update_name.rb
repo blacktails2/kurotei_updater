@@ -37,9 +37,9 @@ end
 
 def update_name(status)
     begin
-        if status.text.match(/^@#{@screen_name} *update_name( (.+))?/) #@sn update_name名前がマッチしてるか調べる
+        if status.text.match(/^@#{@screen_name}[\s　]*update_name[\s　]*(.+)/) #@sn update_name名前がマッチしてるか調べる
             name = $1 #抽出
-        elsif status.text.match(/^(.+?)[\s　]*[(（]@#{@screen_name}[)）]/) #名前(@sn)をマッチしているか調べる
+        elsif status.text.match(/^(.+?)[\s　]*[(（][\s　]*@#{@screen_name}[\s　]*[)）]/) #名前(@sn)をマッチしているか調べる
             name = $1 #抽出
         else #それでもない場合
             return #戻す
@@ -58,6 +58,7 @@ def update_name(status)
             text = "so long." #呟くtextを定義
             @rest_client.update("@#{status.user.screen_name} #{text}") #呟く
             puts "名前が長い" #ターミナルにエラーを書き出す
+            return
         end
         @rest_client.update_profile(name: name) #名前を指定された物に変える
         text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!" #元の名前の場合は元に戻した、指定された場合はi have just...
@@ -66,9 +67,9 @@ def update_name(status)
     end
 
 @stream_client.user do |object|
-    next unless object.is_a? Twitter::Tweet
+next unless object.is_a? Twitter::Tweet
     
-    unless object.text.start_with? "RT"
+unless object.text.start_with? "RT"
         update_name(object)
-    end
+end
 end
