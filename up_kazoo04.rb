@@ -29,18 +29,16 @@ def up_kazoo04(status)
     begin
         if status.text.match(/^@#{@screen_name}[\s　]*up_kazdesign[\s　]*(\d+)/) #@sn update_name名前がマッチしてるか調べる
             number = $1 #抽出
-            else #それでもない場合
+            else
+                @rest_client.update("@#{status.user.screen_name} 数字を入力してください", :in_reply_to_status_id => status.id)
+                p 入力された物が数字じゃない
             return #戻す
         end
     rescue => e #例外をeと定義
         p status, status.text
         p e #例外をターミナルに書き出す
     else 
-<<<<<<< HEAD
         @rest_client.update("@#{status.user.screen_name} #{pictures[number.to_i % pictures.length]}", :in_reply_to_status_id => status.id)
-=======
-        @rest_client.update("@#{status.user.screen_name} #{picture[number.to_i]}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
->>>>>>> 0dff35324b7b83249973c1417495fcd171ff7353
     end
 end
 
