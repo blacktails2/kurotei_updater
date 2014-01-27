@@ -36,7 +36,7 @@ def up_kazoo04(status)
         p status, status.text
         p e #例外をターミナルに書き出す
     else 
-        @rest_client.update("@#{status.user.screen_name} #{picture[number]}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
+        @rest_client.update("@#{status.user.screen_name} #{picture[number.to_i]}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 
