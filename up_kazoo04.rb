@@ -32,14 +32,11 @@ def up_kazoo04(status)
             else #それでもない場合
             return #戻す
         end
-        
-        rescue => e #例外をeと定義
+    rescue => e #例外をeと定義
         p status, status.text
         p e #例外をターミナルに書き出す
-        else 
-        
-        text = @orig_name == number ? "元に戻したよ！" : "picture[number]" #元の名前の場合は元に戻した、指定された場合はi have just...
-        @rest_client.update("@#{status.user.screen_name} #{text}") #textで定義された物を呟く
+    else 
+        @rest_client.update("@#{status.user.screen_name} #{picture[number]}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 
