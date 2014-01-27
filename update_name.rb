@@ -64,12 +64,12 @@ def update_name(status)
         text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!" #元の名前の場合は元に戻した、指定された場合はi have just...
         @rest_client.update("@#{status.user.screen_name} #{text}") #textで定義された物を呟く
     end
-    end
+end
 
 @stream_client.user do |object|
-next unless object.is_a? Twitter::Tweet
+    next unless object.is_a? Twitter::Tweet
     
-unless object.text.start_with? "RT"
+    unless object.text.start_with? "RT"
         update_name(object)
-end
+    end
 end
