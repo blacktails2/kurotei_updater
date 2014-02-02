@@ -39,14 +39,16 @@ def update_name(status)
     begin
         if status.text.match(/^@#{@screen_name}[\s　]*update_name[\s　]*(.+)/) #@sn update_name名前がマッチしてるか調べる
             name = $1 #抽出
-        elsif status.text.match(/^(.+?)[\s　]*[(（][\s　]*@#{@screen_name}[\s　]*[)）]/) #名前(@sn)をマッチしているか調べる
+        elsif status.text.match(/^@#{@screen_name}[\s　]*[俺君]の名前は(.+)/) #名前(@sn)をマッチしているか調べる
             name = $1 #抽出
+        elsif status.text.match(/^(.+?)[\s　]*[(（][\s　]*@#{@screen_name}[\s　]*[)）]/) #名前(@sn)をマッチしているか調べる
+            name = $1
         else #それでもない場合
             return #戻す
         end
         
         if ng_word?(name) #ngワードを調べる
-            @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)") #戒めを呟く
+            @rest_client.update("@#{status.user.screen_name} NGワードが含まれています。変な名前にするな(戒め)", :in_reply_to_status_id => status.id) #戒めを呟く
             return
         end
         
@@ -56,13 +58,13 @@ def update_name(status)
     else #update_nameが成功した場合
         if name && 20 < name.length #名前が20文字を越えている場合
             text = "so long." #呟くtextを定義
-            @rest_client.update("@#{status.user.screen_name} #{text}") #呟く
+            @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #呟く
             puts "名前が長い" #ターミナルにエラーを書き出す
             return
         end
         @rest_client.update_profile(name: name) #名前を指定された物に変える
         text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!" #元の名前の場合は元に戻した、指定された場合はi have just...
-        @rest_client.update("@#{status.user.screen_name} #{text}") #textで定義された物を呟く
+        @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 
