@@ -21,12 +21,19 @@ end
     config.oauth_token_secret = ACCESS_SECRET
 end
 
+tweets = Twitter::API::Timelines.new do |config|
+    config.consumer_key       = CONSUMER_KEY
+    config.consumer_secret    = CONSUMER_SECRET
+    config.oauth_token        = ACCESS_TOKEN
+    config.oauth_token_secret = ACCESS_SECRET
+end
+
 @orig_name, @screen_name = [:name, :screen_name].map{|x| @rest_client.user.send(x) }
 
 
-def kaztweets(status)
+def kaztweets(tweets)
     begin
-        tweets = Twitter.user_timeline("kazoo04")
+        tweets = Twitter.user_timeline("blacktails2")
         if tweets.text.match(/^(@#{@screen_name}[\s　]*.+)/) #@sn update_name名前がマッチしてるか調べる
             tweet = $1 #抽出
         elsif tweets.text.match(/^(.+くろてい.+)/) #名前(@sn)をマッチしているか調べる
@@ -35,7 +42,7 @@ def kaztweets(status)
             return #戻す
         end   
     rescue => e #例外をeと定義
-        p status, status.text
+        p tweets, tweets.text
         p e #例外をターミナルに書き出す
     else #update_nameが成功した場合
         p tweet
@@ -51,6 +58,6 @@ end
     next unless object.is_a? Twitter::Tweet
     
     unless object.text.start_with? "RT"
-        update_name(object)
+        kaztweets(object)
     end
 end
