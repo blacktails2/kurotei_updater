@@ -36,7 +36,6 @@ def kaztweetfavs(status)
         
     rescue => e #例外をeと定義
         p e #例外をターミナルに書き出す
-    else
     end
 end
 
