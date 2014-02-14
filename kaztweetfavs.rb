@@ -1,6 +1,5 @@
 # Coding: UTF-8
 require 'twitter'
-require 'yaml'
 require './key.rb'
 
 CONSUMER_KEY    = Conf::CONSUMER_KEY
