@@ -1,8 +1,6 @@
 # Coding: UTF-8
 require 'twitter'
 require './key.rb'
-require 'pp'
-pp Twitter.user_timeline("kazoo04")
 
 CONSUMER_KEY    = Conf::CONSUMER_KEY
 CONSUMER_SECRET = Conf::CONSUMER_SECRET
