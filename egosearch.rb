@@ -26,7 +26,7 @@ end
 
 def kaztweets(status)
     begin
-        if status.text.match(/^(.*(くろてい|ブラテイ|クロテイ|ぶらてい|kurotei|ｸﾛﾃｲ|ﾌﾞﾗﾃｲ).*)/) #@sn update_name名前がマッチしてるか調べる
+        if status.text.match(/^(.*(くろてい|ブラテイ|クロテイ|ぶらてい|kurotei|ｸﾛﾃｲ|ﾌﾞﾗﾃｲ).*)/m) #エゴサ
             tweet = $1 #抽出
         else #それでもない場合
             return #戻す
@@ -34,17 +34,17 @@ def kaztweets(status)
     rescue => e #例外をeと定義
         p status, status.text
         p e #例外をターミナルに書き出す
-    else #update_nameが成功した場合
+    else #成功したとき
         p tweet
         file_name = "ego.txt"    #保存するファイル名
 
         File.open(file_name, 'a') {|file|
-        file.write ("ID=#{status.id}\t@#{status.user.screen_name}\t#{tweet}\t#{status.created_at.to_s}\n")
+        file.write ("ID=#{status.id}\t@#{status.user.screen_name}\t#{tweet}\t#{status.created_at.to_s}\n")#ID,SN,ツイート,時間
         }
     end
 end
 
-@stream_client.user do |object|
+@stream_client.user do |object|#ここは知らん
     next unless object.is_a? Twitter::Tweet
     
     unless object.text.start_with? "RT"
