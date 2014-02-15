@@ -39,7 +39,7 @@ def kaztweets(status)
         file_name = "ego.txt"    #保存するファイル名
 
         File.open(file_name, 'a') {|file|
-        file.write ("ID=#{status.id}\t#{tweet}\t#{status.created_at.to_s}\n")
+        file.write ("ID=#{status.id}\t@#{status.user.screen_name}\t#{tweet}\t#{status.created_at.to_s}\n")
         }
     end
 end
