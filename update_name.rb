@@ -39,8 +39,8 @@ def update_name(status)
     begin
         if status.text.match(/^@#{@screen_name}[\s　]*update_name[\s　]*(.+)/) #@sn update_name名前がマッチしてるか調べる
             name = $1 #抽出
-        elsif status.text.match(/^@#{@screen_name}[\s　]*[俺君]の名前は(.+)/) #名前(@sn)をマッチしているか調べる
-            name = $1 #抽出
+        elsif status.text.match(/^@#{@screen_name}[\s　]*(俺|君|僕|私|儂|朕|某|麿|予|余|我|吾|妾|麻呂|自分|俺ら|おい|おいどん|ぼくちん|ミー|当方|吾輩|我輩|小生|吾人|愚生|非才|拙者|此方|俺様)(の名前)??は(.+)/) #名前(@sn)をマッチしているか調べる
+            name = $3 #抽出
         elsif status.text.match(/^(.+?)[\s　]*[(（][\s　]*@#{@screen_name}[\s　]*[)）]/) #名前(@sn)をマッチしているか調べる
             name = $1
         else #それでもない場合
@@ -63,8 +63,8 @@ def update_name(status)
             return
         end
         @rest_client.update_profile(name: name) #名前を指定された物に変える
-        text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!" #元の名前の場合は元に戻した、指定された場合はi have just...
-        @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
+        text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}” by" #元の名前の場合は元に戻した、指定された場合はi have just...
+        @rest_client.update("#{text} .@#{status.user.screen_name}！", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 
