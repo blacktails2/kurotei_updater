@@ -37,7 +37,7 @@ end
 
 def update_name(status)
     begin
-        if status.text.match(/^(くろてい|ブラテイ|クロテイ|ぶらてい|ｸﾛﾃｲ|ﾌﾞﾗﾃｲ)(君|くん|クン|ｸﾝ|氏|さん)??は(.+)/) #名前(@sn)をマッチしているか調べる
+        if status.text.match(/^(くろてい|ブラテイ|クロテイ|ぶらてい|ｸﾛﾃｲ|ﾌﾞﾗﾃｲ)(君|くん|クン|ｸﾝ|氏|さん)??は(.+)/) #タイムラインからとる
             name = $3 #抽出
         else #それでもない場合
             return #戻す
@@ -53,9 +53,6 @@ def update_name(status)
         p e #例外をターミナルに書き出す
     else #update_nameが成功した場合
         if name && 20 < name.length #名前が20文字を越えている場合
-            text = "so long." #呟くtextを定義
-            @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #呟く
-            puts "名前が長い" #ターミナルにエラーを書き出す
             return
         end
         @rest_client.retweet(status.id)
