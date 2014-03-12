@@ -35,7 +35,8 @@ def kaztweets(status)
         p status, status.text
         p e #例外をターミナルに書き出す
     else #成功したとき
-        p tweet
+        @rest_client.favorite(status.id)
+        p "#{tweet} ,@#{status.user.screen_name}"
         file_name = "ego.txt"    #保存するファイル名
 
         File.open(file_name, 'a') {|file|
