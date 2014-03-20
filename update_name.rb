@@ -37,6 +37,11 @@ end
 
 def update_name(status)
     begin
+        if status.text.match(/^@#{@screen_name}[\s　]*死ねや/)
+            puts "デフォルトに戻しました"
+            @rest_client.update_profile(name: "くろてい")
+            @rest_client.update("@#{status.user.screen_name} デフォルトに戻しました。", :in_reply_to_status_id => status.id)
+        end
         if status.text.match(/^@#{@screen_name}[\s　]*update_name[\s　]*(.+)/) #@sn update_name名前がマッチしてるか調べる
             name = $1 #抽出
         elsif status.text.match(/^@#{@screen_name}[\s　]*(俺|君|僕|私|儂|朕|某|麿|予|余|我|吾|妾|麻呂|自分|俺ら|おい|おいどん|ぼくちん|ミー|当方|吾輩|我輩|小生|吾人|愚生|非才|拙者|此方|俺様|くろてい|ブラテイ)(の名前)??は(.+)/) #名前(@sn)をマッチしているか調べる
