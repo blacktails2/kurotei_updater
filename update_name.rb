@@ -37,7 +37,7 @@ end
 
 def update_name(status)
     begin
-        if status.text.match(/^@#{@screen_name}[\s　]*死ねや/)
+        if status.text.match(/^@#{@screen_name}[\s　]*つよくいきて/)
             puts "デフォルトに戻しました"
             @rest_client.update_profile(name: "くろてい")
             @rest_client.update("@#{status.user.screen_name} デフォルトに戻しました。", :in_reply_to_status_id => status.id)
