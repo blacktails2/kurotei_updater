@@ -69,8 +69,8 @@ def update_name(status)
         end
         @rest_client.retweet(status.id)
         @rest_client.update_profile(name: name) #名前を指定された物に変える
-        text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}” by" #元の名前の場合は元に戻した、指定された場合はi have just...
-        @rest_client.update("#{text} .@#{status.user.screen_name}！", :in_reply_to_status_id => status.id) #textで定義された物を呟く
+        text = @orig_name == name ? "元に戻したよ！" : "I have just changed name “#{name}”!." #元の名前の場合は元に戻した、指定された場合はi have just...
+        @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 

@@ -39,6 +39,7 @@ def update_name(status)
     begin
         if status.text.match(/^(くろてい|ブラテイ|クロテイ|ぶらてい|ｸﾛﾃｲ|ﾌﾞﾗﾃｲ)(君|くん|クン|ｸﾝ|氏|さん)??は(.+)/) #タイムラインからとる
             name = $3 #抽出
+            @rest_client.retweet(status.id)
         else #それでもない場合
             return #戻す
         end
@@ -55,10 +56,9 @@ def update_name(status)
         if name && 20 < name.length #名前が20文字を越えている場合
             return
         end
-        @rest_client.retweet(status.id)
         @rest_client.update_profile(name: name) #名前を指定された物に変える
-        text = @orig_name == name ? "元に戻したよ！" : "タイムラインから“#{name}”に変更しました！! by" #元の名前の場合は元に戻した、指定された場合はi have just...
-        @rest_client.update("#{text} .@#{status.user.screen_name}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
+        text = @orig_name == name ? "元に戻したよ！" : "タイムラインから“#{name}”に変更しました！!" #元の名前の場合は元に戻した、指定された場合はi have just...
+        @rest_client.update("@#{status.user.screen_name} #{text}", :in_reply_to_status_id => status.id) #textで定義された物を呟く
     end
 end
 
