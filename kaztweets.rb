@@ -21,35 +21,31 @@ end
     config.oauth_token_secret = ACCESS_SECRET
 end
 
-tweets = Twitter::API::Timelines.new do |config|
-    config.consumer_key       = CONSUMER_KEY
-    config.consumer_secret    = CONSUMER_SECRET
-    config.oauth_token        = ACCESS_TOKEN
-    config.oauth_token_secret = ACCESS_SECRET
-end
-
 @orig_name, @screen_name = [:name, :screen_name].map{|x| @rest_client.user.send(x) }
 
 
-def kaztweets(tweets)
+def kaztweets(status)
     begin
-        tweets = Twitter.user_timeline("blacktails2")
-        if tweets.text.match(/^(@#{@screen_name}[\s　]*.+)/) #@sn update_name名前がマッチしてるか調べる
-            tweet = $1 #抽出
-        elsif tweets.text.match(/^(.+くろてい.+)/) #名前(@sn)をマッチしているか調べる
+        if status.user.screen_name.match(/kazoo04|kagee04/)
+        else
+            return
+        end
+        if s.text.match(/(.*@#{@screen_name}[\s　]*.+)/)
             tweet = $1
-        else #それでもない場合
-            return #戻す
-        end   
+        elsif s.text.match(/^(.+くろてい.+)/)
+            tweet = $1
+        else
+            return
+        
     rescue => e #例外をeと定義
-        p tweets, tweets.text
+        p status, status.text
         p e #例外をターミナルに書き出す
     else #update_nameが成功した場合
-        p tweet
+        p "#{tweet} ,@#{status.user.screen_name}"
         file_name = "kazmentions.txt"    #保存するファイル名
 
         File.open(file_name, 'a') {|file|
-        file.write tweet
+        file.write ("ID=#{status.id}\t@#{status.user.screen_name}\t#{tweet}\t#{status.created_at.to_s}\n")#ID,SN,ツイート,時間
         }
     end
 end
